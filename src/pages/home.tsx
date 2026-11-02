@@ -9,7 +9,7 @@ import Trash from "/trash.svg"
 type myTask={
   id: string;
   title: string;
-  complited:boolean;
+  completed:boolean;
 }
  
 export default function Home() {
@@ -28,12 +28,22 @@ export default function Home() {
   const task: myTask = {
     id: crypto.randomUUID(),
     title,
-    complited: false,
+    completed: false,
   };
 
-  console.log("Minha Tarefa:", task);
+//   console.log("Minha Tarefa:", task);
   setTasks((currentTask ) => [...currentTask, task]);
   setNewTasks("");
+}
+
+// MARCAR A TAREFA COMO CONCLUIDA
+function handleToggleTask(taskId: string) {
+  setTasks((currentTasks) => 
+    currentTasks.map((task) => 
+      task.id === taskId ? { ...task, completed: !task.completed } :
+      task
+    )
+  );
 }
 
   return (
@@ -120,9 +130,43 @@ export default function Home() {
            className=" flex items-center justify-between    bg-[#262626]  border border-[#333333] rounded-lg p-4 ">
 
            <div className=" flex items-center gap-[12px]">
-       <input className=" w-5"
-           type="checkbox" />
-            <p>{task.title}</p> 
+       {/* <input className=" w-5"
+           type="checkbox" 
+           checked={task.completed}
+           onChange={() => handleToggleTask(task.id)}
+           /> */}
+
+           <button type="button"
+           onClick={() => handleToggleTask(task.id)}
+           aria-label={
+            task.completed
+
+            ? "Marcar como como pendente"
+           : "Marcar como não concluída"
+          }
+           title={
+            task.completed
+            ? "Reabrir tarefa"
+           : "Concluir tarefa"
+           }
+
+           className={`w-5 h-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors ${
+            task.completed 
+            ? "bg-[#5E60CE] border-[#5E60CE]" 
+            : "border-[#4EA8DE]"}`}
+           
+           >
+            {task.completed && (
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.6667 1L4.00004 7L1.33337 4.27273" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+           </button>
+            <p className={`flex-1 min-w-0 text-[14px] break-words ${
+              task.completed ? "line-through text-[#808080]" : "text-[#ffffff]"
+            }`}>
+              {task.title}
+            </p>
 
            </div>
         <img src={Trash} alt="" />
